@@ -1,64 +1,54 @@
-// DOM Elements
 const time = document.querySelector('.time'),
   greeting = document.querySelector('.greeting'),
   name = document.querySelector('.name'),
-  focus = document.querySelector('.focus');
+  focus = document.querySelector('.focus'),
+  data = document.querySelector('.day');
 
-// Options
-const showAmPm = true;
+const dayWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const nameMonth = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-// Show Time
+let tempName, tempFocus;
+
 function showTime() {
   let today = new Date(),
     hour = today.getHours(),
     min = today.getMinutes(),
-    sec = today.getSeconds();
-
-  // Set AM or PM
-  const amPm = hour >= 12 ? 'PM' : 'AM';
-
-  // 12hr Format
-  hour = hour % 12 || 12;
-
-  // Output Time
-  time.innerHTML = `${hour}<span>:</span>${addZero(min)}<span>:</span>${addZero(
-    sec
-  )} ${showAmPm ? amPm : ''}`;
-
+    sec = today.getSeconds(),
+    month = today.getMonth(),
+    date = today.getDate(),
+    day = today.getDay();
+  if ((!hour && !min && !sec) || !data.innerText) data.innerHTML = `<span>${dayWeek[day]} ${date} ${nameMonth[month]}</span>`;
+  time.innerHTML = `${hour}<span>:</span>${addZero(min)}<span>:</span>${addZero(sec)}`;
   setTimeout(showTime, 1000);
 }
 
-// Add Zeros
 function addZero(n) {
   return (parseInt(n, 10) < 10 ? '0' : '') + n;
 }
 
-// Set Background and Greeting
+function setBG(timeOfDay, slogan) {
+  const rand = Math.round(Math.random() * 20);
+  greeting.textContent = slogan;
+  return `url('./assets/images/${timeOfDay}/${addZero(rand)}.jpg')`;
+}
+
 function setBgGreet() {
   let today = new Date(),
-    hour = today.getHours();
-
-  if (hour < 12) {
-    // Morning
-    document.body.style.backgroundImage =
-      "url('https://i.ibb.co/7vDLJFb/morning.jpg')";
-    greeting.textContent = 'Good Morning, ';
+    hour = today.getHours()
+  if (hour < 6) {
+    document.body.style.backgroundImage = setBG('night', 'Good Night, ');
+  } else if (hour < 12) {
+    document.body.style.backgroundImage = setBG('morning', 'Good Morning, ');
   } else if (hour < 18) {
-    // Afternoon
-    document.body.style.backgroundImage =
-      "url('https://i.ibb.co/3mThcXc/afternoon.jpg')";
-    greeting.textContent = 'Good Afternoon, ';
+    document.body.style.backgroundImage = setBG('day', 'Good Afternoon, ');
   } else {
-    // Evening
-    document.body.style.backgroundImage =
-      "url('https://i.ibb.co/924T2Wv/night.jpg')";
-    greeting.textContent = 'Good Evening, ';
+    document.body.style.backgroundImage = setBG('evening', 'Good Evening, ');
     document.body.style.color = 'white';
   }
 }
 
-// Get Name
 function getName() {
+
   if (localStorage.getItem('name') === null) {
     name.textContent = '[Enter Name]';
   } else {
@@ -66,20 +56,17 @@ function getName() {
   }
 }
 
-// Set Name
 function setName(e) {
   if (e.type === 'keypress') {
-    // Make sure enter is pressed
     if (e.which == 13 || e.keyCode == 13) {
-      localStorage.setItem('name', e.target.innerText);
+      e.target.innerText ? localStorage.setItem('name', e.target.innerText) : name.textContent = tempName;
+      tempName = '';
       name.blur();
     }
-  } else {
-    localStorage.setItem('name', e.target.innerText);
   }
 }
 
-// Get Focus
+
 function getFocus() {
   if (localStorage.getItem('focus') === null) {
     focus.textContent = '[Enter Focus]';
@@ -88,25 +75,37 @@ function getFocus() {
   }
 }
 
-// Set Focus
 function setFocus(e) {
   if (e.type === 'keypress') {
-    // Make sure enter is pressed
     if (e.which == 13 || e.keyCode == 13) {
-      localStorage.setItem('focus', e.target.innerText);
+      e.target.innerText ? localStorage.setItem('focus', e.target.innerText) : focus.textContent = tempFocus;
+      tempFocus = '';
       focus.blur();
     }
-  } else {
-    localStorage.setItem('focus', e.target.innerText);
   }
 }
 
+function delName() {
+  tempName = name.textContent;
+  name.textContent = '';
+  name.style.width = '200px';
+}
+
+function delFocus() {
+  tempFocus = focus.textContent;
+  focus.textContent = '';
+  focus.style.width = '300px';
+}
+
+
+name.addEventListener('focus', delName);
 name.addEventListener('keypress', setName);
 name.addEventListener('blur', setName);
+focus.addEventListener('focus', delFocus);
 focus.addEventListener('keypress', setFocus);
 focus.addEventListener('blur', setFocus);
 
-// Run
+
 showTime();
 setBgGreet();
 getName();
