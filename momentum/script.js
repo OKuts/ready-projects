@@ -7,6 +7,8 @@ const time = document.querySelector('.time'),
 const dayWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const nameMonth = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
+const btn = document.querySelector('.btn');
+let countBG = new Date().getHours();
 let tempName, tempFocus;
 
 function showTime() {
@@ -18,6 +20,7 @@ function showTime() {
     date = today.getDate(),
     day = today.getDay();
   if ((!hour && !min && !sec) || !data.innerText) data.innerHTML = `<span>${dayWeek[day]} ${date} ${nameMonth[month]}</span>`;
+  if (hour === hour + min + sec) setBgGreet();
   time.innerHTML = `${hour}<span>:</span>${addZero(min)}<span>:</span>${addZero(sec)}`;
   setTimeout(showTime, 1000);
 }
@@ -26,29 +29,36 @@ function addZero(n) {
   return (parseInt(n, 10) < 10 ? '0' : '') + n;
 }
 
-function setBG(timeOfDay, slogan) {
-  const rand = Math.round(Math.random() * 20);
-  greeting.textContent = slogan;
-  return `url('./assets/images/${timeOfDay}/${addZero(rand)}.jpg')`;
+function setBG(hour) {
+  hour = hour < 10 ? `0${+hour}` : +hour;
+  document.body.style.backgroundImage = `url('./assets/images/${hour}.jpg')`;
 }
 
-function setBgGreet() {
+function setBGButton() {
+  // hour = hour < 10 ? `0${+hour}` : +hour;
+  // document.body.style.backgroundImage = `url('./assets/images/${hour}.jpg')`;
+}
+
+function setBgGreet(btn) {
   let today = new Date(),
     hour = today.getHours()
   if (hour < 6) {
-    document.body.style.backgroundImage = setBG('night', 'Good Night, ');
+    greeting.textContent = 'Good Night, ';
+    setBG(hour);
   } else if (hour < 12) {
-    document.body.style.backgroundImage = setBG('morning', 'Good Morning, ');
+    greeting.textContent = 'Good Morning, ';
+    setBG(hour);
   } else if (hour < 18) {
-    document.body.style.backgroundImage = setBG('day', 'Good Afternoon, ');
+    greeting.textContent = 'Good Afternoon, ';
+    setBG(hour);
   } else {
-    document.body.style.backgroundImage = setBG('evening', 'Good Evening, ');
+    greeting.textContent = 'Good Evening, ';
+    setBG(hour);
     document.body.style.color = 'white';
   }
 }
 
 function getName() {
-
   if (localStorage.getItem('name') === null) {
     name.textContent = '[Enter Name]';
   } else {
@@ -65,7 +75,6 @@ function setName(e) {
     }
   }
 }
-
 
 function getFocus() {
   if (localStorage.getItem('focus') === null) {
@@ -96,7 +105,16 @@ function delFocus() {
   focus.textContent = '';
   focus.style.width = '300px';
 }
+const blockquote = document.querySelector('blockquote');
+const figcaption = document.querySelector('figcaption');
 
+async function getQuote() {
+  // const url = `https://cors-anywhere.herokuapp.com/https://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en`;
+  // const res = await fetch(url);
+  // const data = await res.json();
+  // blockquote.textContent = data.quoteText;
+  // figcaption.textContent = data.quoteAuthor;
+}
 
 name.addEventListener('focus', delName);
 name.addEventListener('keypress', setName);
@@ -104,9 +122,14 @@ name.addEventListener('blur', setName);
 focus.addEventListener('focus', delFocus);
 focus.addEventListener('keypress', setFocus);
 focus.addEventListener('blur', setFocus);
-
+btn.addEventListener('click', function () {
+  countBG === 23 ? countBG = 0 : countBG++;
+  setBG(countBG);
+});
 
 showTime();
 setBgGreet();
 getName();
 getFocus();
+
+document.addEventListener('DOMContentLoaded', getQuote);
