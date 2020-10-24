@@ -9,20 +9,23 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   text-align: center;
   height: 100vh;
   background-size: cover;
   color:white;
   transition: background-image 1s ease-in-out;
+  text-shadow: #000 1px 1px 0, #000 -1px -1px 0, 
+  #000 -1px 1px 0, #000 1px -1px 0;
 }
 span {
   display: inline-block;
 }
 
-.day {
+/* .day {
   font-size: 2rem;
-}
+} */
+
 .time {
   font-size: 8rem;
 }
@@ -45,15 +48,69 @@ h2 {
   background-repeat: no-repeat;
   filter: grayscale(1);
   margin: 10px;
+  align-self: flex-end;
+  appearance: none;
+  margin-right: 40px;
 }
 .btn:hover {
   filter: grayscale(.8);
 }
 
+.btn:focus, .btn:active {
+  outline: none;
+}
+
+.humidity1 {
+  width: 28px;
+}
+
+.wind1 {
+  width: 28px;
+}
+
+.termo {
+  wilth: 28px;
+}
+
+.block-weather {
+  display: none;
+  align-items: flex-end;
+}
+
+.block-weather span {
+  display: inline-block;
+}
+
+.block p {
+  margin: 0 15px;
+}
+
+.quote {
+  display: inline-flex;
+  flex-direction: column;
+  margin: 0 5px;
+}
+figcaption {
+  align-self: flex-end;
+  font-size: smaller;
+  margin-top: 4px;
+}
 
 @media (max-width: 700px) {
+  body {
+    font-size: 10px;
+  }
+
   .time {
-    font-size: 6rem;
+    font-size: 5rem;
   }
 }
 
+@media (max-width: 500px) {
+  body {
+    font-size: 8px;
+  }
+  .time {
+    font-size: 4rem;
+  }
+}
